@@ -183,8 +183,8 @@ abstract class Kernel extends QMatrix {
     private static G graph = null;
     private static GDataConf graphconf = null;
     private static SM_Engine engine = null;
-    public static ICconf icConf ;
-    public static SMconf smConfGroupwise ;
+    public static ICconf icConf;
+    public static SMconf smConfGroupwise;
     // </semkernel specific attributes>
 
     @Override
@@ -239,7 +239,7 @@ abstract class Kernel extends QMatrix {
             s2.add(factory.getURI(y[i].classURI));
         }
 
-        double sim = 0 ;
+        double sim = 0;
         try {
             sim = engine.compare(smConfGroupwise, s1, s2);
 
@@ -258,7 +258,7 @@ abstract class Kernel extends QMatrix {
             smConfGroupwise = new SMconf("SimGIC",
                     SMConstants.FLAG_SIM_GROUPWISE_DAG_GIC);
 
-            smConfGroupwise.setICconf(icConf) ;
+            smConfGroupwise.setICconf(icConf);
 
             URIFactoryMemory.getSingleton().loadNamespacePrefix(
                     "GO", "http://purl.obolibrary.org/obo/GO_");
@@ -282,10 +282,10 @@ abstract class Kernel extends QMatrix {
             engine = new SM_Engine(graph);
 
         } catch (Exception e) {
-            System.err.println(e.getMessage()) ;
-            e.printStackTrace() ;
+            System.err.println(e.getMessage());
+            e.printStackTrace();
             System.err.println("Error loading ontology file.");
-            System.exit(-1) ;
+            System.exit(-1);
         }
     }
 
@@ -1813,7 +1813,7 @@ public class svm {
         if (fApB >= 0)
             return Math.exp(-fApB)/(1.0+Math.exp(-fApB));
         else
-            return 1.0/(1+Math.exp(fApB)) ;
+            return 1.0/(1+Math.exp(fApB));
     }
 
     // Method 2 from the multiclass_prob paper by Wu, Lin, and Weng
@@ -2414,7 +2414,7 @@ public class svm {
                     System.out.println("Target: "+target[perm[j]]);
                     System.out.println("ProbEstim(0): "+prob_estimates[0]);
                     System.out.println("ProbEstim(1): "+prob_estimates[1]);
-                    target[perm[j]] = prob_estimates[0] ;
+                    target[perm[j]] = prob_estimates[0];
                 }
             }
             else
@@ -2616,7 +2616,7 @@ public class svm {
             fp.writeBytes("coef0 "+param.coef0+"\n");
 
         if (param.kernel_type == svm_parameter.SEMANTIC) {
-            fp.writeBytes("map") ;
+            fp.writeBytes("map");
             for (String cl:param.class2id.keySet()) {
                 Integer id = param.class2id.get(cl);
                 fp.writeBytes(" "+cl+":"+id);
@@ -2799,16 +2799,16 @@ public class svm {
                 }
                 else if(cmd.startsWith("map"))
                 {
-                    Map<String, Integer> class2id = new LinkedHashMap() ;
+                    Map<String, Integer> class2id = new LinkedHashMap<String, Integer>();
                     String[] toks = arg.split(" ");
 
                     for (String tok : toks) {
-                        String uri = tok.substring(0, tok.lastIndexOf(":")) ;
+                        String uri = tok.substring(0, tok.lastIndexOf(":"));
                         String indexString = tok.substring(tok.lastIndexOf(":")+1);
-                        Integer index = new Integer(indexString) ;
-                        class2id.put(uri, index) ;
+                        Integer index = new Integer(indexString);
+                        class2id.put(uri, index);
                     }
-                    param.class2id = class2id ;
+                    param.class2id = class2id;
                 }
                 else
                 {
@@ -2848,10 +2848,10 @@ public class svm {
 
         // read sv_coef and SV
 
-        Map<Integer, String> id2class = new HashMap() ;
+        Map<Integer, String> id2class = new HashMap();
         for (String s : model.param.class2id.keySet()) {
-            Integer ind = model.param.class2id.get(s) ;
-            id2class.put(ind, s) ;
+            Integer ind = model.param.class2id.get(s);
+            id2class.put(ind, s);
         }
 
         int m = model.nr_class - 1;
@@ -2905,6 +2905,7 @@ public class svm {
            kernel_type != svm_parameter.POLY &&
            kernel_type != svm_parameter.RBF &&
            kernel_type != svm_parameter.SIGMOID &&
+           kernel_type != svm_parameter.SEMANTIC &&
            kernel_type != svm_parameter.PRECOMPUTED)
             return "unknown kernel type";
 
