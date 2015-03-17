@@ -184,6 +184,7 @@ public class svm_train {
         model_file_name = modelFileName;
         cross_validation = numFolds;
         svm.svm_set_print_string_function(print);
+        semantic = true;
 
         // <code_copy>
         read_problem();
