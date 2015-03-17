@@ -16,7 +16,7 @@ import semlibsvm.libsvm.svm_node;
 import semlibsvm.libsvm.svm_parameter;
 import semlibsvm.libsvm.svm_print_interface;
 
-class svm_predict {
+public class svm_predict {
     private static svm_print_interface svm_print_null = new svm_print_interface()
     {
         public void print(String s) {}
