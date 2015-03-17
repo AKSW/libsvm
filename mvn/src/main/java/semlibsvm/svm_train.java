@@ -177,6 +177,55 @@ class svm_train {
 		}
 	}
 
+    public void run(svm_parameter param, String inputFileName,
+            String modelFileName, int numFolds, svm_print_interface print) throws IOException {
+        this.param = param;
+        input_file_name = inputFileName;
+        model_file_name = modelFileName;
+        cross_validation = numFolds;
+        svm.svm_set_print_string_function(print);
+
+        // <code_copy>
+        read_problem();
+        error_msg = svm.svm_check_parameter(prob,param);
+
+        if(error_msg != null)
+        {
+            System.err.print("ERROR: "+error_msg+"\n");
+            System.exit(1);
+        }
+
+        if(cross_validation != 0)
+        {
+            do_cross_validation();
+        }
+        else
+        {
+            model = svm.svm_train(prob,param);
+            svm.svm_save_model(model_file_name,model);
+        }
+        // </code_copy>
+    }
+
+    public void run(svm_parameter param, String inputFileName,
+            String modelFileName, svm_print_interface print) throws IOException {
+        int numFolds = 0;  // default value for cross validation
+        run(param, inputFileName, modelFileName, numFolds, print);
+    }
+
+    public void run(svm_parameter param, String inputFileName,
+            String modelFileName, int numFolds) throws IOException {
+        svm_print_interface print = null;  // default printing to stdout
+        run(param, inputFileName, modelFileName, numFolds, print);
+    }
+
+    public void run(svm_parameter param, String inputFileName,
+            String modelFileName) throws IOException {
+        int numFolds = 0;  // default value for cross validation
+        svm_print_interface print = null;  // default printing to stdout
+        run(param, inputFileName, modelFileName, numFolds, print);
+    }
+
 	private void run(String argv[]) throws IOException
 	{
 		parse_command_line(argv);
