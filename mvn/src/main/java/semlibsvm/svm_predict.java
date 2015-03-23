@@ -32,7 +32,7 @@ public class svm_predict {
 
     private static svm_print_interface svm_print_string = svm_print_stdout;
 
-    static void info(String s)
+    public static void info(String s)
     {
         svm_print_string.print(s);
     }
@@ -47,7 +47,7 @@ public class svm_predict {
         return Integer.parseInt(s);
     }
 
-    private static void predict(BufferedReader input, DataOutputStream output, svm_model model, int predict_probability) throws IOException
+    public static void predict(BufferedReader input, DataOutputStream output, svm_model model, int predict_probability) throws IOException
     {
         int correct = 0;
         int total = 0;
