@@ -31,6 +31,7 @@ import slib.sml.sm.core.metrics.ic.utils.IC_Conf_Topo;
 import slib.sml.sm.core.metrics.ic.utils.ICconf;
 import slib.sml.sm.core.utils.SMConstants;
 import slib.sml.sm.core.utils.SMconf;
+import slib.utils.ex.SLIB_Exception;
 
 //
 // Kernel Cache
@@ -252,34 +253,13 @@ abstract class Kernel extends QMatrix {
 
     public static void initSimilarityEngine(String ontfile) {
         try {
-            icConf = new IC_Conf_Topo("Intrinsic term specificity measure",
+            ICconf icConf = new IC_Conf_Topo("Intrinsic term specificity measure",
                     SMConstants.FLAG_ICI_HARISPE_2012);
 
-            smConfGroupwise = new SMconf("SimGIC",
+            SMconf smConfGroupwise = new SMconf("SimGIC",
                     SMConstants.FLAG_SIM_GROUPWISE_DAG_GIC);
 
-            smConfGroupwise.setICconf(icConf);
-
-            URIFactoryMemory.getSingleton().loadNamespacePrefix(
-                    "GO", "http://purl.obolibrary.org/obo/GO_");
-
-            graph = new GraphMemory(graph_uri);
-            // FIXME: hard coded kb file format
-            graphconf = new GDataConf(GFormat.OBO, ontfile);
-
-            GraphLoaderGeneric.populate(graphconf, graph);
-
-            // set new graph root
-            URI virtualRoot = factory.getURI(
-                    "http://phenomebrowser.net/smltest/virtualRoot");
-            graph.addV(virtualRoot);
-
-            // We root the graphs using the virtual root as root
-            GAction rooting = new GAction(GActionType.REROOTING);
-            rooting.addParameter("root_uri", virtualRoot.stringValue());
-            GraphActionExecutor.applyAction(factory, rooting, graph);
-
-            engine = new SM_Engine(graph);
+            initSimilarityEngine(ontfile, icConf, smConfGroupwise);
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -287,6 +267,40 @@ abstract class Kernel extends QMatrix {
             System.err.println("Error loading ontology file.");
             System.exit(-1);
         }
+    }
+
+    public static void initSimilarityEngine(String ontfile, ICconf icConf, SMconf smConfGroupwise) {
+            Kernel.icConf = icConf;
+            Kernel.smConfGroupwise = smConfGroupwise;
+            Kernel.smConfGroupwise.setICconf(icConf);
+
+            try {
+                URIFactoryMemory.getSingleton().loadNamespacePrefix(
+                        "GO", "http://purl.obolibrary.org/obo/GO_");
+                graph = new GraphMemory(graph_uri);
+                // FIXME: hard coded kb file format
+                graphconf = new GDataConf(GFormat.RDF_XML, ontfile);
+
+                GraphLoaderGeneric.populate(graphconf, graph);
+
+                // set new graph root
+                URI virtualRoot = factory.getURI(
+                        "http://phenomebrowser.net/smltest/virtualRoot");
+                graph.addV(virtualRoot);
+
+                // We root the graphs using the virtual root as root
+                GAction rooting = new GAction(GActionType.REROOTING);
+                rooting.addParameter("root_uri", virtualRoot.stringValue());
+                GraphActionExecutor.applyAction(factory, rooting, graph);
+
+                engine = new SM_Engine(graph);
+
+            } catch (SLIB_Exception e) {
+                System.err.println(e.getMessage());
+                e.printStackTrace();
+                System.err.println("Error loading ontology file.");
+                System.exit(-1);
+            }
     }
 
     Kernel(int l, svm_node[][] x_, svm_parameter param)
